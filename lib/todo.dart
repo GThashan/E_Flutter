@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'taskitem.dart' show TaskItem;
+
 class Todo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -24,15 +26,13 @@ class Todo extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 25.0,
-                      color: Color.fromARGB(255, 86, 66, 66),
+                      color: Color.fromARGB(255, 43, 63, 48),
                     ),
                   ),
                 ],
               ),
 
               SizedBox(height: 20),
-
-            
               Row(
                 children: [
                   Expanded(
@@ -70,58 +70,14 @@ class Todo extends StatelessWidget {
                 child: ListView(
                   children: [
                     
-                    TaskItem(task: "Web"),
-                    TaskItem(task: "API"),
-                    TaskItem(task: "App"),
+                    TaskItem(task: "Need to complete task 1"),
+                    TaskItem(task: "Need to complete task 2"),
+                    TaskItem(task: "Need to complete task 3"),
                   ],
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class TaskItem extends StatelessWidget {
-  final String task;
-
-  TaskItem({required this.task});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              task,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            Row(
-              children: [
-                // Complete Button
-                IconButton(
-                  onPressed: () {
-                    // Complete Task Logic Here
-                  },
-                  icon: Icon(Icons.check_circle, color: Colors.green),
-                ),
-                // Delete Button
-                IconButton(
-                  onPressed: () {
-                    // Delete Task Logic Here
-                  },
-                  icon: Icon(Icons.delete, color: Colors.red),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );
