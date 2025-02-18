@@ -7,13 +7,13 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal,
-      body: SingleChildScrollView( // ✅ Fix: Makes screen scrollable
+      body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 50), // Extra space to avoid top cut-off
+              SizedBox(height: 50),
               Image(
                 image: AssetImage("images/logo.png"),
                 width: 250,
@@ -44,9 +44,9 @@ class LoginPage extends StatelessWidget {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                obscureText: true, // ✅ Hides password
+                obscureText: true,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -56,8 +56,11 @@ class LoginPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 child: Text("Login"),
               ),

@@ -60,7 +60,7 @@ class RegisterPage extends StatelessWidget {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -70,7 +70,7 @@ class RegisterPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                   textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 child: Text("Register"),
