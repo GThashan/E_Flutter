@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
+
 import 'config.dart'; 
 
 class RegisterPage extends StatefulWidget {
@@ -19,6 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (usernameController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty) {
+           
       var regBody = {
         "username": usernameController.text,
         "email": emailController.text,
@@ -26,13 +28,17 @@ class _RegisterPageState extends State<RegisterPage> {
       };
 
       try {
+        var headers = {"Content-Type": "application/json"};
         var response = await http.post(
           Uri.parse(registration), 
-          headers: {"Content-Type": "application/json"},
+          headers: headers,
           body: jsonEncode(regBody),
         );
+          print("Sending request to: $registration");
+          print("Headers: $headers");
+          print("Request body: ${jsonEncode(regBody)}");
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
           var jsonResponse = jsonDecode(response.body);
           if (jsonResponse['status']) {
             Navigator.push(
@@ -73,6 +79,8 @@ class _RegisterPageState extends State<RegisterPage> {
               TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
+                  errorStyle: TextStyle(color: Colors.white),
+                  errorText: _isNotValidate ? "Username is required" : null,
                   labelText: "Username",
                   prefixIcon: Icon(Icons.person),
                   filled: true,
@@ -87,10 +95,10 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(height: 10),
               TextField(
                 controller: emailController,
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   errorStyle: TextStyle(color: Colors.white),
-                  errorText: _isNotValidate ? "Enter valid email" : null,
+                  errorText: _isNotValidate ? "Email is required" : null,
                   labelText: "Email",
                   prefixIcon: Icon(Icons.email),
                   filled: true,
@@ -105,6 +113,8 @@ class _RegisterPageState extends State<RegisterPage> {
               TextField(
                 controller: passwordController,
                 decoration: InputDecoration(
+                    errorStyle: TextStyle(color: Colors.white),
+                  errorText: _isNotValidate ? "Password is required" : null,
                   labelText: "Password",
                   prefixIcon: Icon(Icons.lock),
                   filled: true,
@@ -114,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                obscureText: true,
+                // obscureText: true,
               ),
               SizedBox(height: 40),
               ElevatedButton(
