@@ -1,10 +1,17 @@
-
 import 'package:flutter/material.dart';
 
 class TaskItem extends StatelessWidget {
   final String task;
+  final String id;
+  final VoidCallback onDelete;
+  final VoidCallback onComplete;
 
-  TaskItem({required this.task});
+  TaskItem({
+    required this.task,
+    required this.id,
+    required this.onDelete,
+    required this.onComplete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,24 +23,15 @@ class TaskItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              task,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
+            Text(task, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             Row(
               children: [
-               
                 IconButton(
-                  onPressed: () {
-                 
-                  },
+                  onPressed: onComplete,
                   icon: Icon(Icons.check_circle, color: Colors.green),
                 ),
-             
                 IconButton(
-                  onPressed: () {
-             
-                  },
+                  onPressed: onDelete,
                   icon: Icon(Icons.delete, color: Colors.red),
                 ),
               ],

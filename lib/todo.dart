@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'config.dart'; 
-
-import 'taskitem.dart' show TaskItem;
+import 'config.dart';
+import 'taskitem.dart';
 
 class Todo extends StatefulWidget {
   final String userId;
@@ -24,14 +23,21 @@ class _TodoState extends State<Todo> {
     fetchUserTodos();
   }
 
-
   Future<void> fetchUserTodos() async {
     try {
       var response = await http.get(Uri.parse("$getUserTodos/${widget.userId}"));
 
       if (response.statusCode == 200) {
+        List<dynamic> fetchedTasks = jsonDecode(response.body);
+
         setState(() {
-          tasks = jsonDecode(response.body);
+          tasks = fetchedTasks.map((task) {
+            return {
+              'id': task['_id'] ?? '', 
+              'title': task['title'] ?? 'Untitled Task',
+              'completed': task['completed'] ?? false
+            };
+          }).toList();
         });
       } else {
         print("Error fetching tasks: ${response.statusCode}");
@@ -41,25 +47,57 @@ class _TodoState extends State<Todo> {
     }
   }
 
- 
   Future<void> createTask() async {
     if (taskController.text.isNotEmpty) {
       try {
         var response = await http.post(
-         Uri.parse("$todos/${widget.userId}"),
+          Uri.parse("$todos/${widget.userId}"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"title": taskController.text}),
         );
 
         if (response.statusCode == 201) {
           taskController.clear();
-          fetchUserTodos(); 
+          fetchUserTodos();
         } else {
           print("Error creating task: ${response.statusCode}");
         }
       } catch (e) {
         print("Error: $e");
       }
+    }
+  }
+
+  Future<void> deleteTask(String todoId) async {
+    print("Deleting task with ID: $todoId");
+    try {
+      var response = await http.delete(Uri.parse("$todos/$todoId"));
+
+      if (response.statusCode == 200) {
+        fetchUserTodos();
+      } else {
+        print("Error deleting task: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> completeTask(String taskId) async {
+    try {
+      var response = await http.put(
+        Uri.parse("$todos/$taskId"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"completed": true}),
+      );
+
+      if (response.statusCode == 200) {
+        fetchUserTodos();
+      } else {
+        print("Error completing task: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
     }
   }
 
@@ -124,7 +162,13 @@ class _TodoState extends State<Todo> {
                 child: ListView.builder(
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {
-                    return TaskItem(task: tasks[index]['title']);
+                    var task = tasks[index];
+                    return TaskItem(
+                      task: task['title'] ?? 'Untitled Task',
+                      id: task['id'] ?? '',
+                      onDelete: () => deleteTask(task['id'] ?? ''),
+                      onComplete: () => completeTask(task['id'] ?? ''),
+                    );
                   },
                 ),
               ),
