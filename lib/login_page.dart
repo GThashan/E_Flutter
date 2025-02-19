@@ -26,7 +26,7 @@ class LoginPage extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(50),
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(50),
                     borderSide: BorderSide.none,
                   ),
                 ),
