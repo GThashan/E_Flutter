@@ -166,6 +166,7 @@ class _TodoState extends State<Todo> {
                     return TaskItem(
                       task: task['title'] ?? 'Untitled Task',
                       id: task['id'] ?? '',
+                       completed: task['completed'] ?? false,
                       onDelete: () => deleteTask(task['id'] ?? ''),
                       onComplete: () => completeTask(task['id'] ?? ''),
                     );

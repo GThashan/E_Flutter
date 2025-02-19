@@ -5,12 +5,14 @@ class TaskItem extends StatelessWidget {
   final String id;
   final VoidCallback onDelete;
   final VoidCallback onComplete;
+  final bool completed;
 
   TaskItem({
     required this.task,
     required this.id,
     required this.onDelete,
     required this.onComplete,
+     required this.completed,
   });
 
   @override
@@ -22,8 +24,16 @@ class TaskItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(task, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        children: [
+            Text(
+              task,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                decoration: completed ? TextDecoration.lineThrough : TextDecoration.none, 
+                color: completed ? Colors.grey : Colors.black, 
+              ),
+            ),
             Row(
               children: [
                 IconButton(
