@@ -31,10 +31,13 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         if (response.statusCode == 201) {
+          
           var jsonResponse = jsonDecode(response.body);
+            var _id = jsonResponse['userId'];
+            print("${_id}");
           if (jsonResponse['status']) {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Todo()));
+              context, MaterialPageRoute(builder: (context) => Todo(userId: _id,)));
           } else {
             print("Something went wrong: ${jsonResponse['message']}");
           }

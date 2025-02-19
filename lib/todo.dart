@@ -1,8 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'config.dart'; 
 
 import 'taskitem.dart' show TaskItem;
 
-class Todo extends StatelessWidget {
+class Todo extends StatefulWidget {
+  final String userId;
+
+  Todo({required this.userId});
+
+  @override
+  _TodoState createState() => _TodoState();
+}
+
+class _TodoState extends State<Todo> {
+  TextEditingController taskController = TextEditingController();
+  List<dynamic> tasks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserTodos();
+  }
+
+
+  Future<void> fetchUserTodos() async {
+    try {
+      var response = await http.get(Uri.parse("$getUserTodos/${widget.userId}"));
+
+      if (response.statusCode == 200) {
+        setState(() {
+          tasks = jsonDecode(response.body);
+        });
+      } else {
+        print("Error fetching tasks: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+ 
+  Future<void> createTask() async {
+    if (taskController.text.isNotEmpty) {
+      try {
+        var response = await http.post(
+         Uri.parse("$todos/${widget.userId}"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({"title": taskController.text}),
+        );
+
+        if (response.statusCode == 201) {
+          taskController.clear();
+          fetchUserTodos(); 
+        } else {
+          print("Error creating task: ${response.statusCode}");
+        }
+      } catch (e) {
+        print("Error: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +73,6 @@ class Todo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          
               Row(
                 children: [
                   CircleAvatar(
@@ -31,12 +90,12 @@ class Todo extends StatelessWidget {
                   ),
                 ],
               ),
-
               SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: taskController,
                       decoration: InputDecoration(
                         hintText: "Enter new task",
                         filled: true,
@@ -51,9 +110,7 @@ class Todo extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: () {
-                     
-                    },
+                    onPressed: createTask,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -62,18 +119,13 @@ class Todo extends StatelessWidget {
                   ),
                 ],
               ),
-
               SizedBox(height: 20),
-
-            
               Expanded(
-                child: ListView(
-                  children: [
-                    
-                    TaskItem(task: "Need to complete task 1"),
-                    TaskItem(task: "Need to complete task 2"),
-                    TaskItem(task: "Need to complete task 3"),
-                  ],
+                child: ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    return TaskItem(task: tasks[index]['title']);
+                  },
                 ),
               ),
             ],
