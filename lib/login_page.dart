@@ -1,8 +1,56 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
 import 'todo.dart' show Todo;
+import 'package:http/http.dart' as http;
+import 'dart:convert'; 
+import 'config.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool _isNotValidate = false;
+
+  void loginUser() async {
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      var regBody = {
+        "email": emailController.text,
+        "password": passwordController.text
+      };
+
+      try {
+        var headers = {"Content-Type": "application/json"};
+        var response = await http.post(
+          Uri.parse(login),  
+          headers: headers,
+          body: jsonEncode(regBody),
+        );
+
+        if (response.statusCode == 201) {
+          var jsonResponse = jsonDecode(response.body);
+          if (jsonResponse['status']) {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Todo()));
+          } else {
+            print("Something went wrong: ${jsonResponse['message']}");
+          }
+        } else {
+          print("Server error: ${response.statusCode}");
+        }
+      } catch (e) {
+        print("Error: $e");
+      }
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +68,10 @@ class LoginPage extends StatelessWidget {
                 height: 250,
               ),
               TextField(
+                controller: emailController,  
                 decoration: InputDecoration(
+                  errorStyle: TextStyle(color: Colors.white),
+                  errorText: _isNotValidate ? "Email is required" : null,
                   labelText: "Email",
                   prefixIcon: Icon(Icons.email),
                   filled: true,
@@ -34,7 +85,10 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
+                controller: passwordController,  
                 decoration: InputDecoration(
+                  errorStyle: TextStyle(color: Colors.white),
+                  errorText: _isNotValidate ? "Password is required" : null,
                   labelText: "Password",
                   prefixIcon: Icon(Icons.lock),
                   filled: true,
@@ -48,12 +102,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 50),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Todo()),
-                  );
-                },
+                onPressed: loginUser,  
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
